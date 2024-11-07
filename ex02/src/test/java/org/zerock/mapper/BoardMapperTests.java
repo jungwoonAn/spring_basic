@@ -17,10 +17,10 @@ public class BoardMapperTests {
 	@Autowired
 	private BoardMapper mapper;
 	
-//	@Test
-//	public void testGetList() {
-//		mapper.getList().forEach(list -> log.info(list));
-//	}
+	@Test
+	public void testGetList() {
+		mapper.getList().forEach(list -> log.info(list));
+	}
 	
 //	@Test
 //	public void testInsert() {
