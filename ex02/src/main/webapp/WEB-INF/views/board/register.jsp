@@ -34,8 +34,10 @@
                     		<input type="text" class="form-control" name="writer" />
                     	</div>
                     	
-                    	<button type="submit" class="btn btn-default">등록</button>
-                    	<button type="reset" class="btn btn-default">취소</button>
+                    	<button type="submit" class="btn btn-primary">등록</button>
+                    	<button type="reset" class="btn btn-warning">취소</button>
+                    	<button type="button" class="btn btn-success" 
+                    		onclick="location.href='/board/list'">목록</button>                    
                     </form>
                 </div>
                 <!-- /.panel-body -->
@@ -46,4 +48,4 @@
     </div>
     <!-- /.row -->
 
- <%@include file="../includes/footer.jsp" %>
+<%@include file="../includes/footer.jsp" %>

@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.zerock.domain.BoardVO;
+import org.zerock.domain.Criteria;
 
 import lombok.extern.log4j.Log4j;
 
@@ -19,18 +20,18 @@ public class BoardServiceTests {
 	@Autowired
 	private BoardService service;
 	
-	@Test
-	public void testRegister() {
-		
-		BoardVO board = new BoardVO();
-		board.setTitle("새로 작성하는 글3");
-		board.setContent("새로 작성하는 글3");
-		board.setWriter("user03");
-		
-		service.register(board);
-		
-		log.info("생성된 게시물 번호 : " + board.getBno());
-	}
+//	@Test
+//	public void testRegister() {
+//		
+//		BoardVO board = new BoardVO();
+//		board.setTitle("새로 작성하는 글3");
+//		board.setContent("새로 작성하는 글3");
+//		board.setWriter("user03");
+//		
+//		service.register(board);
+//		
+//		log.info("생성된 게시물 번호 : " + board.getBno());
+//	}
 	
 //	@Test
 //	public void testGetList() {
@@ -39,6 +40,12 @@ public class BoardServiceTests {
 //		
 //		service.getList().forEach(board -> log.info(board));
 //	}
+	
+	@Test
+	public void testGetList() {
+		
+		service.getList(new Criteria(2, 10)).forEach(board -> log.info(board));
+	}
 	
 //	@Test
 //	public void testGet() {
