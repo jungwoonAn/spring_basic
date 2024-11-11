@@ -20,18 +20,18 @@ public class BoardServiceTests {
 	@Autowired
 	private BoardService service;
 	
-//	@Test
-//	public void testRegister() {
-//		
-//		BoardVO board = new BoardVO();
-//		board.setTitle("새로 작성하는 글3");
-//		board.setContent("새로 작성하는 글3");
-//		board.setWriter("user03");
-//		
-//		service.register(board);
-//		
-//		log.info("생성된 게시물 번호 : " + board.getBno());
-//	}
+	@Test
+	public void testRegister() {
+		
+		BoardVO board = new BoardVO();
+		board.setTitle("새로 작성하는 글3");
+		board.setContent("새로 작성하는 글3");
+		board.setWriter("user03");
+		
+		service.register(board);
+		
+		log.info("생성된 게시물 번호 : " + board.getBno());
+	}
 	
 //	@Test
 //	public void testGetList() {
@@ -47,25 +47,25 @@ public class BoardServiceTests {
 		service.getList(new Criteria(2, 10)).forEach(board -> log.info(board));
 	}
 	
-//	@Test
-//	public void testGet() {
-//		log.info(service.get(9L));
-//	}
+	@Test
+	public void testGet() {
+		log.info(service.get(9L));
+	}
 	
-//	@Test
-//	public void testDelete() {
-//		// 게시물 번호의 존재 여부 확인후 테스트할 것
-//		log.info("Remove result : " + service.remove(6L));
-//	}
-//	
-//	@Test
-//	public void testUpdate() {
-//		
-//		BoardVO board = service.get(4L);
-//		
-//		if(board == null) return;
-//		
-//		board.setTitle("제목 수정");
-//		log.info("Modify result : " + service.modify(board));
-//	}
+	@Test
+	public void testDelete() {
+		// 게시물 번호의 존재 여부 확인후 테스트할 것
+		log.info("Remove result : " + service.remove(6L));
+	}
+	
+	@Test
+	public void testUpdate() {
+		
+		BoardVO board = service.get(4L);
+		
+		if(board == null) return;
+		
+		board.setTitle("제목 수정");
+		log.info("Modify result : " + service.modify(board));
+	}
 }

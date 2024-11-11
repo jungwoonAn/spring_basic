@@ -50,6 +50,26 @@
                         </tbody>
                     </table>
                     
+                    <div class="row">
+                    	<div class="col text-center">
+                    		<form action="/board/list" method="get" id="searchForm">
+                    			<select name="type">
+                    				<option value="" ${ pageMaker.cri.type==null ? 'selected' : ''}>---</option>
+                    				<option value="T" ${ pageMaker.cri.type=='T' ? 'selected' : 'T'}>제목</option>
+                    				<option value="C" ${ pageMaker.cri.type=='C' ? 'selected' : 'C'}>내용</option>
+                    				<option value="W" ${ pageMaker.cri.type=='W' ? 'selected' : 'W'}>작성자</option>
+                    				<option value="TC" ${ pageMaker.cri.type=='TC' ? 'selected' : 'TC'}>제목 or 내용</option>
+                    				<option value="TW" ${ pageMaker.cri.type=='TW' ? 'selected' : 'TW'}>제목 or 작성자</option>
+                    				<option value="TCW" ${ pageMaker.cri.type=='TCW' ? 'selected' : 'TCW'}>제목 or 내용 or 작성자</option>
+                    			</select>
+                    			<input type="text" name="keyword" value="${ pageMaker.cri.keyword }">
+                    			<input type="hidden" name="pageNum" value="${ pageMaker.cri.pageNum }">
+                    			<input type="hidden" name="amount" value="${ pageMaker.cri.amount }">
+                    			<button class="btn btn-primary">검색</button>
+                    		</form>
+                    	</div>
+                    </div>
+                    
                     <!-- Paging start -->
                     <nav aria-label="Page navigation" class="text-center">
 					  <ul class="pagination">
@@ -81,6 +101,8 @@
 					<form action="/board/list" method="get" id="actionForm">
 						<input type="hidden" name="pageNum" value="${ pageMaker.cri.pageNum }">
 						<input type="hidden" name="amount" value="${ pageMaker.cri.amount }">
+						<input type="hidden" name="type" value="${ pageMaker.cri.type }">
+						<input type="hidden" name="keyword" value="${ pageMaker.cri.keyword }">
 					</form>
                     <!-- Paging end -->
                 </div>
@@ -162,6 +184,25 @@
     				$(this).attr("href") + '">"');
     		actionForm.attr('action','/board/get');
     		actionForm.submit();
+    	});
+    	
+    	// 검색버튼 이벤트 처리
+    	const searchForm = $('#searchForm');
+    	
+    	$('#searchForm button').click(function(e){
+    		if(!searchForm.find('option:selected').val()){
+    			alert("검색 종류를 선택하세요");
+    			return false;
+    		}else if(!searchForm.find("input[name='keyword']").val()){
+    			alert("키워드를 입력하세요");
+    			return false;
+    		}
+    		
+    		// 검색버튼 클릭하면 검색은 1페이지를 하도록 수정
+    		searchForm.find("input[name='pageNum']").val("1");
+    		e.preventDefault();
+    		
+    		searchForm.submit();
     	});
     });
     </script>

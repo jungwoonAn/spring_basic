@@ -21,6 +21,12 @@
                 <!-- /.panel-heading -->
                 <div class="panel-body">
                 	<form action="/board/modify" method="post">
+                		<!-- 추가 -->
+                		<input type="hidden" name="pageNum" value="${ cri.pageNum }">
+                		<input type="hidden" name="amount" value="${ cri.amount }">
+                		<input type="hidden" name="type" value="${ cri.type }">
+                		<input type="hidden" name="keyword" value="${ cri.keyword }">
+                		
 	                	<div class="form-group">
 	                   		<label>번호</label>
 	                   		<input type="text" class="form-control" name="bno" value="${ board.bno }" readonly />
@@ -61,7 +67,7 @@
 		 e.preventDefault();  // 버튼 form 전송기능 막기
 		 
 		 let operation = $(this).data("oper");
-		 // console.log(operation);
+		 console.log(operation);
 		 
  		 if(operation === 'remove'){
 			 formObj.attr('action', '/board/remove');
@@ -69,7 +75,16 @@
 			 //location.href='/board/list';
 			 //return;
 			 formObj.attr('action', '/board/list').attr('method','get');
+			 const pageNumTag = $("input[name='pageNum']").clone();
+			 const amountTag = $("input[name='amount']").clone();
+			 const typeTag = $("input[name='type']").clone();
+			 const keywordTag = $("input[name='keyword']").clone();
+			 
 			 formObj.empty();
+			 formObj.append(pageNumTag);
+			 formObj.append(amountTag);
+			 formObj.append(typeTag);
+			 formObj.append(keywordTag);			 
 		 }
 		 formObj.submit();
 		 

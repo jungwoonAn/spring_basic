@@ -1,6 +1,8 @@
 package org.zerock.mapper;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -20,10 +22,10 @@ public class BoardMapperTests {
 	@Autowired
 	private BoardMapper mapper;
 	
-//	@Test
-//	public void testGetList() {
-//		mapper.getList().forEach(list -> log.info(list));
-//	}
+	@Test
+	public void testGetList() {
+		mapper.getList().forEach(list -> log.info(list));
+	}
 	
 	@Test
 	public void testPaging() {
@@ -31,54 +33,73 @@ public class BoardMapperTests {
 		mapper.getListWithPaging(cri)
 			.forEach(board -> log.info(board));
 	}
+		
+	@Test
+	public void testSearch() {
+		Criteria cri = new Criteria();
+		cri.setKeyword("금요일");
+		cri.setType("TC");
+		
+		mapper.getListWithPaging(cri)
+			.forEach(board -> log.info(board));
+	}
 	
-//	@Test
-//	public void testInsert() {
-//		BoardVO board = new BoardVO();
-//		board.setTitle("새로 작성하는 글");
-//		board.setContent("새로 작성하는 내용");
-//		board.setWriter("user01");
-//		
-//		mapper.insert(board);
-//		
-//		log.info(board);
-//	}
+	@Test
+	public void testTotalCount() {
+		Criteria cri = new Criteria();
+		cri.setKeyword("금요일");
+		cri.setType("TC");
+		
+		log.info("totalCount : " + mapper.getTotalCount(cri));
+	}
 	
-//	@Test
-//	public void testInsertSelectKey() {
-//		BoardVO board = new BoardVO();
-//		board.setTitle("새로 작성하는 글2");
-//		board.setContent("새로 작성하는 내용2");
-//		board.setWriter("user02");
-//		
-//		mapper.insertSelectKey(board);
-//		
-//		log.info(board);
-//	}
+	@Test
+	public void testInsert() {
+		BoardVO board = new BoardVO();
+		board.setTitle("새로 작성하는 글");
+		board.setContent("새로 작성하는 내용");
+		board.setWriter("user01");
+		
+		mapper.insert(board);
+		
+		log.info(board);
+	}
 	
-//	@Test
-//	public void testRead() {
-//		BoardVO board = mapper.read(6L);
-//		
-//		log.info(board);
-//	}
+	@Test
+	public void testInsertSelectKey() {
+		BoardVO board = new BoardVO();
+		board.setTitle("새로 작성하는 글2");
+		board.setContent("새로 작성하는 내용2");
+		board.setWriter("user02");
+		
+		mapper.insertSelectKey(board);
+		
+		log.info(board);
+	}
 	
-//	@Test
-//	public void testDelete() {
-//		log.info("Delete count: " + mapper.delete(3L));
-//	}
+	@Test
+	public void testRead() {
+		BoardVO board = mapper.read(6L);
+		
+		log.info(board);
+	}
 	
-//	@Test
-//	public void testUpdate() {
-//		BoardVO board = new BoardVO();
-//		// 실행 전 존재하는 번호인지 확인 할 것
-//		board.setBno(1L);
-//		board.setTitle("수정된 제목");
-//		board.setContent("수정된 내용");
-//		board.setWriter("user00");
-//		
-//		int count = mapper.update(board);
-//		log.info("Update count: " + count);
-//	}
+	@Test
+	public void testDelete() {
+		log.info("Delete count: " + mapper.delete(3L));
+	}
+	
+	@Test
+	public void testUpdate() {
+		BoardVO board = new BoardVO();
+		// 실행 전 존재하는 번호인지 확인 할 것
+		board.setBno(1L);
+		board.setTitle("수정된 제목");
+		board.setContent("수정된 내용");
+		board.setWriter("user00");
+		
+		int count = mapper.update(board);
+		log.info("Update count: " + count);
+	}
 
 }

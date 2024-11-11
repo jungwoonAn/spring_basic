@@ -42,7 +42,12 @@ public class BoardController {
 		log.info("list cri : " + cri);
 
 		model.addAttribute("list", service.getList(cri)); // /WEB-INF/views/board/list.jsp
-		model.addAttribute("pageMaker", new PageDTO(cri, 123));
+//		model.addAttribute("pageMaker", new PageDTO(cri, 123));
+		
+		int total = service.getTotal(cri);
+		log.info("total : " + total);
+		
+		model.addAttribute("pageMaker", new PageDTO(cri, total));
 	}
 	
 	@GetMapping("/register")
@@ -63,30 +68,44 @@ public class BoardController {
 	
 	@GetMapping({"/get", "/modify"})
 	public void get(@RequestParam("bno") Long bno, 
-			@ModelAttribute("cri") Criteria cri ,Model model) {
+			@ModelAttribute("cri") Criteria cri , Model model) {
 		log.info("get or modify.....");
 		
 		model.addAttribute("board", service.get(bno));
 	}
 	
 	@PostMapping("/modify")
-	public String modify(BoardVO board, RedirectAttributes rttr) {
-		log.info("modify.....");
+	public String modify(BoardVO board, 
+			@ModelAttribute("cri") Criteria cri, RedirectAttributes rttr) {
+		log.info("modify : " + board);
 		
 		if(service.modify(board)) {
 			rttr.addFlashAttribute("result", "success");
 		}
 		
+		// redirect시 속성값으로 hidden 속성값 전달
+		rttr.addAttribute("pageNum", cri.getPageNum());
+		rttr.addAttribute("amount", cri.getAmount());	
+		rttr.addAttribute("type", cri.getType());	
+		rttr.addAttribute("keyword", cri.getKeyword());	
+		
 		return "redirect:/board/list";
 	}	
 	
 	@PostMapping("/remove")
-	public String remove(@RequestParam("bno") Long bno, RedirectAttributes rttr) {
-		log.info("remove.....");
+	public String remove(@RequestParam("bno") Long bno, 
+			@ModelAttribute("cri") Criteria cri, RedirectAttributes rttr) {
+		log.info("remove..." + bno);
 		
 		if(service.remove(bno)) {  // DB조회가 되면 1(=true)이 반환
 			rttr.addFlashAttribute("result", "success");
 		}
+		
+		// redirect시 속성값으로 hidden 속성값 전달
+		rttr.addAttribute("pageNum", cri.getPageNum());
+		rttr.addAttribute("amount", cri.getAmount());
+		rttr.addAttribute("type", cri.getType());	
+		rttr.addAttribute("keyword", cri.getKeyword());	
 		
 		return "redirect:/board/list";
 	}
