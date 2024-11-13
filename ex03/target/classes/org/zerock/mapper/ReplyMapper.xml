@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.zerock.mapper.ReplyMapper">
+
+	<insert id="insert">
+		insert into reply (rno, bno, reply, replyer)
+		values(seq_reply.nextval, #{bno}, #{reply}, #{replyer})
+	</insert>
+	
+	<select id="read" resultType="org.zerock.domain.ReplyVO">
+		select * from reply where rno = #{rno}
+	</select>
+	
+	<select id="getList" resultType="org.zerock.domain.ReplyVO">
+		select * from reply where bno = #{bno}
+	</select>
+	
+	<delete id="delete">
+		delete from reply where rno = #{rno}
+	</delete>
+	
+	<update id="update">
+		update reply 
+		set reply = #{reply}, updateDate = sysdate 
+		where rno = #{rno}
+	</update>
+		
+	<select id="getListWithPaging" resultType="org.zerock.domain.ReplyVO">		
+	  <![CDATA[
+		select rno, bno, reply, replyer, replyDate, updateDate
+		from (
+		    select
+		        /*+ index_desc(reply pk_reply) */
+		        rownum rn, rno, bno, reply, replyer, replyDate, updateDate
+		    from reply
+		    where rownum <= #{cri.pageNum}*#{cri.amount})
+		where rn > (#{cri.pageNum}-1)*#{cri.amount}
+	  ]]>
+	</select>
+</mapper>
