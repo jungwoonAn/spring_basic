@@ -132,4 +132,11 @@ alter table reply add constraint pk_reply primary key (rno);
 -- reply bno 컬럼 FK constraint 변경
 alter table reply add constraint fk_reply_board foreign key (bno) references board (bno);
 
-select * from reply;
+commit;
+
+-- reply 테이블에 인덱스 생성
+create index idx_reply on reply (bno desc, rno asc);
+
+select * from reply where rno > 0;
+
+select * from reply where bno = 22481 order by replydate desc;

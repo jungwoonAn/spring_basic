@@ -55,10 +55,10 @@ public class ReplyMapperTests {
 	}
 	
 	@Test
-	public void getList() {
+	public void testList() {
 		mapper.getList(22481L).forEach(vo -> log.info(vo));
 	}
-	
+		
 	@Test
 	public void testDelete() {
 		mapper.delete(3L);
@@ -77,6 +77,14 @@ public class ReplyMapperTests {
 		Criteria cri = new Criteria();
 		
 		mapper.getListWithPaging(cri, bnoArr[0])
+			.forEach(reply -> log.info(reply));
+	}
+	
+	@Test
+	public void testGetListWithPaging2() {
+		Criteria cri = new Criteria(2, 5);  // page=2, amount=5
+		
+		mapper.getListWithPaging(cri, 130L)
 			.forEach(reply -> log.info(reply));
 	}
 }
