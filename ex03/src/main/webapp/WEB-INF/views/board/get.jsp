@@ -78,7 +78,7 @@
 	  <div class="modal-dialog">
 	    <div class="modal-content">
 	      <div class="modal-header">
-	        <h5 class="modal-title">댓글 작성하기</h5>
+	        <h5 class="modal-title">Reply Modal</h5>
 	      </div>
 	      <div class="modal-body">
 	      	<div class="form-group">
@@ -128,13 +128,13 @@ $(function(){
 		replyService.getList({bno: bnoValue, page: page || 1}, function(replyCnt, list){
 			console.log('replyCnt : ' + replyCnt);
 			console.log('list : ' + list);
-			
+				
 			if(page == -1){
 				pageNum = Math.ceil(replyCnt/5.0);  // 마지막 페이지
 				showList(pageNum);  // 목록 갱신
 				return;
 			}
-			
+
 			let str = '';
 			
 			if(list == null || list.length == 0){
@@ -148,9 +148,9 @@ $(function(){
 					str += '<p>'+ list[i].reply +'</p></li>'
 				}
 				
-				replyUL.html(str);
+				replyUL.html(str);  // 댓글 출력
 				
-				showReplyPage(replyCnt);
+				showReplyPage(replyCnt);  // 화면에 댓글 페이지 번호 출력 메서드 호출
 			}			
 		});
 	}
@@ -169,8 +169,8 @@ $(function(){
 	$('#addReplyBtn').click(function(){
 		modal.find('input').val('');
 		modalInputReplyDate.closest('div').hide();
-		modal.find('button[id != modalCloseBtn]').hide();
 		
+		modal.find('button[id != modalCloseBtn]').hide();
 		modalRegisterBtn.show();
 		
 		$('.modal').modal('show');
@@ -212,7 +212,9 @@ $(function(){
 				.attr('readonly','readonly');
 			modal.data('rno', reply.rno);
 			
-			modalRegisterBtn.hide();
+			modal.find('button[id != modalCloseBtn]').hide();
+			modalModBtn.show();
+			modalRemoveBtn.show();
 			
 			modal.modal('show');
 		})
@@ -222,15 +224,15 @@ $(function(){
 	modalModBtn.click(function(){
 		let reply = {
 			rno: modal.data('rno'),
-			reply: modalInputReply.val()
-			
+			reply: modalInputReply.val()			
 		}
 		
 		replyService.update(reply, function(result){
 			alert('댓글이 수정되었습니다.');
 			
 			modal.modal('hide');
-			showList(1);
+			// showList(1);
+			showList(pageNum);
 		});
 	});
 	
@@ -242,7 +244,8 @@ $(function(){
 			alert('댓글이 삭제되었습니다');
 			
 			modal.modal('hide');
-			showList(1);
+			// showList(1);
+			showList(pageNum);
 		});
 	});
 	
@@ -251,10 +254,10 @@ $(function(){
 	const replyPageFooter = $('.panel-footer');
 	
 	function showReplyPage(replyCnt){
-		let endNum = Math.ceil(pageNum / 5.0) * 10;
+		let endNum = Math.ceil(pageNum / 5.0) * 5;
 		let startNum = endNum - 4;
 		
-		let prev = startNum != 1;
+		let prev = (startNum != 1);
 		let next = false;
 		
 		if(endNum * 5 >= replyCnt){
@@ -277,7 +280,7 @@ $(function(){
 		for(let i=startNum; i<=endNum; i++){
 			let active = pageNum == i ? 'active' : '';
 			
-			str += '<li class="page-item "+ active +>';
+			str += '<li class="page-item '+ active +'">';
 			str += '<a class="page-link" href="'+ i +'">'+ i +'</a></li>'; 	
 		}
 		
@@ -287,12 +290,22 @@ $(function(){
 		    str += '<span aria-hidden="true">&raquo;</span></a></li>';  
 		}
 		
-		str += '</ul></nav>';
-		
-		console.log(str);
+		str += '</ul></nav>';		
+		// console.log(str);
 		
 		replyPageFooter.html(str);
 	}	
+	
+	// 페이지 번호 클릭 이벤트 처리
+	replyPageFooter.on('click','li a', function(e){
+		e.preventDefault();
+		
+		let targetPageNum = $(this).attr('href');
+		// console.log(targetPageNum);
+		pageNum = targetPageNum;
+		
+		showList(pageNum);
+	});
 	
 	// replyService add test
 	/* replyService.add(

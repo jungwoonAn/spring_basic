@@ -138,10 +138,10 @@ commit;
 create index idx_reply on reply (bno desc, rno asc);
 
 -- 특정 게시물의 rno 순번대로 데이터 조회
-select /*+ index_desc(reply idx_reply) */
+select /*+ index(reply idx_reply) */
     rownum rn, bno, rno, reply, replyer, replyDate, updateDate
 from reply
-where bno = 22481
+where bno = 130
 and rno > 0;
 
 -- 댓글 페이징 처리(서브쿼리)
@@ -150,7 +150,7 @@ from (
     select /*+ index_desc(reply idx_reply) */
         rownum rn, bno, rno, reply, replyer, replyDate, updateDate
     from reply
-    where bno = 22481
+    where bno = 130
         and rno > 0
         and rownum <= 10)
 where rn > 5;
@@ -158,4 +158,4 @@ where rn > 5;
 
 select * from reply where rno > 0;
 
-select * from reply where bno = 22481 order by replydate desc;
+select * from reply where bno = 130 order by replydate desc;
