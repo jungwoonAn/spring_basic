@@ -18,7 +18,7 @@
 	</bean>
 	
 	<!-- 커넥션 풀 설정 -->
-	<bean id="dataSource" class="com.zaxxer.hikari.HikariDataSource">
+	<bean id="dataSource" class="com.zaxxer.hikari.HikariDataSource" destroy-method="close">
 		<constructor-arg ref="hikariConfig" />
 	</bean>
 	

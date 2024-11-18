@@ -24,6 +24,7 @@ values(seq_board.nextval, '테스트 제목5','테스트 내용5','user00');
 -- board 테이블 조회
 select * from board;
 
+
 commit;
 
 select * from board where bno > 0;
@@ -158,4 +159,27 @@ where rn > 5;
 
 select * from reply where rno > 0;
 
-select * from reply where bno = 130 order by replydate desc;
+select * from reply where bno = 22540 order by replydate desc;
+
+
+-- 5-19_트랜잭션
+-- 실습 테이블 생성
+create table sample1(col1 varchar2(500));
+create table sample2(col2 varchar2(50));
+
+commit;
+
+select * from sample1;
+select * from sample2;
+
+-- 기존 데이터 삭제
+delete from sample1;
+commit;
+
+-- 5-20_댓글수 처리
+-- board 테이블에 댓글수 컬럼 추가
+alter table board add (replycnt number default 0);
+
+update board set replycnt = (select count(rno) from reply where reply.bno = board.bno);
+
+commit;
