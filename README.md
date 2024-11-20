@@ -23,3 +23,6 @@
 
 ### ex05
 ##### 파일 업로드 방식
+
+### ex06
+##### Spring Web Security

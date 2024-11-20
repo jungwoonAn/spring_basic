@@ -28,16 +28,16 @@
 }
 
 .bigPictureWrapper {
-  position: fixed;
+  position: absolute;
   display: none;
-  justify-content: center;
-  align-items: center;
-  top: 0;
-  left: 0;
-  width:100%;
-  height:100%;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 100%;
+  height: 100%;
   background-color: rgba(0, 0, 0, 0.7);
   z-index: 100;
+  cursor: pointer;
 }
 
 .bigPicture {
@@ -45,6 +45,8 @@
   display:flex;
   justify-content: center;
   align-items: center;
+  width: 100%;
+  height: 0;
 }
 
 </style>
@@ -75,20 +77,12 @@
 	function showImage(fileCallPath) {
 		// alert("fileCallPath" + fileCallPath);
 		
-		$('.bigPictureWrapper').css('disply', 'flex').show();
+		$('.bigPictureWrapper').show();
 		
 		$('.bigPicture').html('<img src="/display?fileName='+ encodeURI(fileCallPath) +'">')
-		.animate({width: '100%', height: '100%'}, 1000);
+		.animate({height: '100%'}, 1000);
 	}
-	
-	// 섬네일 닫기
-	$('.bigPictureWrapper').click(function(){
-		$('bitPicture').animate({width: '0%', height: '0%'}, 1000);
-		setTimeout(function() {
-			$(this).hide();
-		}, 1000);
-	});
-	
+		
 	$(function(){
 		// 파일 업로드 제외 확장자와 크기 설정
 		const regex = new RegExp('(.*?)\.(exe|sh|zip|alz)$');
@@ -172,6 +166,14 @@
 			
 			uploadResult.append(str);
 		}
+		
+		// 섬네일 닫기
+	 	$('.bigPictureWrapper').click(function(){
+			$('.bigPicture').animate({height: '0'}, 1000);
+			setTimeout(function() {
+				$('.bigPictureWrapper').hide();
+			}, 1000);
+		}); 
 	});
 	</script>
 
