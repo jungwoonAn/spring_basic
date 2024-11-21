@@ -2,6 +2,7 @@ package org.zerock.security;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 
 import javax.sql.DataSource;
 
@@ -122,5 +123,46 @@ public class MemberTests {
 				}
 			}
 		}		
+	}
+	
+	@Test
+	public void testPass() {
+		String sql = "select userpw from member where userid=?";
+		
+		Connection con = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		
+		try {
+			con = ds.getConnection();
+			pstmt = con.prepareStatement(sql);
+			pstmt.setString(1, "user0");
+			rs = pstmt.executeQuery();
+			
+			if(rs.next()) {
+				String userpw = rs.getString("userpw");
+				log.info("userpw" + userpw);
+				boolean matches = pwencoder.matches("a1234", userpw);
+				log.info("pw check : " + matches);
+			}
+		}catch(Exception e) {
+			e.printStackTrace();
+		}finally {
+			if(pstmt != null) {
+				try {
+					pstmt.close();
+				}catch(Exception e) {
+					e.printStackTrace();
+				}
+			}
+			
+			if(con != null) {
+				try {
+					con.close();
+				}catch(Exception e) {
+					e.printStackTrace();
+				}
+			}
+		}
 	}
 }

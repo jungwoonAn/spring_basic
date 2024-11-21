@@ -14,11 +14,15 @@
 	
 	<form action="/login" method="post">
 		<div>
-			<input type="text" name="username" value="admin">
+			<input type="text" name="username">
 		</div>
 		<div>
-			<input type="password" name="password" value="1234">
+			<input type="password" name="password">
 		</div>
+		<div>
+			<input type="checkbox" name="remember-me"> 로그인 상태 유지
+		</div>
+		
 		<div>
 			<button type="submit">로그인</button>
 		</div>

@@ -244,3 +244,21 @@ create table member_auth (
 select * from member;
 
 select * from member_auth;
+
+select m.userid, userpw, username, enabled, regdate, updatedate, a.auth
+from member m left outer join member_auth a
+on m.userid = a.userid
+where m.userid = 'user15';
+
+-- 7-35_데이터베이스를 이용하는 자동 로그인
+-- 로그인 정보를 유지하는 테이블(persistent_logins) 생성
+create table persistent_logins (
+    series varchar2(64) primary key,
+    username varchar2(64) not null,    
+    token varchar2(64) not null,
+    last_used timestamp not null
+);
+
+commit;
+
+select * from persistent_logins;
