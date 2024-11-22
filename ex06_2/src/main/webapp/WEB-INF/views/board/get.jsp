@@ -69,8 +69,9 @@
         	<div class="panel panel-default">
                 <div class="panel-heading">
                     <i class="fa fa-comments fa-fw"></i> Reply                                        
-	                <button id="addReplyBtn" class="btn btn-primary btn-xs pull-right">댓글 작성</button>
-                    
+	                <sec:authorize access="isAuthenticated()">                    
+	                    <button id="addReplyBtn" class="btn btn-primary btn-xs pull-right">댓글 작성</button>
+                    </sec:authorize>                    
                 </div>
                 <div class="panel-body">
                     <ul class="chat"></ul>
@@ -175,16 +176,16 @@ $(function(){
 	let replyer = null;
 	
 	<sec:authorize access="isAuthenticated()">
-		replyer = '<sec:authentication property="principal.username" />';
+		replyer = '<sec:authentication property="principal.username"/>';
 	</sec:authorize>
 	
 	let csrfHeaderName = '${_csrf.headerName}';
 	let csrfTokenValue = '${_csrf.token}';
 	
 	// Ajax spring securty header..
-/* 	#(document).ajaxSend(function(e, xhr, options){
+ 	$(document).ajaxSend(function(e, xhr, options){
 		xhr.setRequestHeader(csrfHeaderName, csrfTokenValue);
-	}); */
+	}); 
 		
 	// 댓글 작성 버튼 이벤트
 	$('#addReplyBtn').click(function(){
@@ -244,10 +245,27 @@ $(function(){
 	
 	// 댓글 수정 버튼 이벤트
 	modalModBtn.click(function(){
+		
 		let reply = {
 			rno: modal.data('rno'),
 			reply: modalInputReply.val()			
 		}
+		
+		// 로그인 안했다면 return
+		if(!replyer){
+			alert("로그인 후 수정이 가능합니다.");
+			modal.modal("hide");
+			return;
+		}
+		
+		// 로그인 후 진입 부분
+		let originalReplyer = modalInputReplyer.val();  // 댓글 작성자
+		
+		if(replyer != originalReplyer) {
+			alert("자신이 작성한 댓글만 수정이 가능합니다.");
+			modal.modal("hide");
+			return;
+		}				
 		
 		replyService.update(reply, function(result){
 			alert('댓글이 수정되었습니다.');
@@ -262,7 +280,24 @@ $(function(){
 	modalRemoveBtn.click(function(){
 		let rno = modal.data('rno');
 		
-		replyService.remove(rno, function(result){
+		// 로그인 안했다면 return
+		if(!replyer){
+			alert("로그인 후 삭제가 가능합니다.");
+			modal.modal("hide");
+			return;
+		}
+		
+		// 로그인 후 진입 부분
+		let originalReplyer = modalInputReplyer.val();  // 댓글 작성자
+		
+		if(replyer != originalReplyer) {
+			alert("자신이 작성한 댓글만 삭제가 가능합니다.");
+			modal.modal("hide");
+			return;
+		}		
+		
+		// 댓글 삭제
+		replyService.remove(rno, originalReplyer, function(result){
 			alert('댓글이 삭제되었습니다');
 			
 			modal.modal('hide');

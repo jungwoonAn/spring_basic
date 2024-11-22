@@ -78,8 +78,11 @@ public class ReplyController {
 	}
 	
 	// http://localhost:8080/replies/26
-	@DeleteMapping(value = "/{rno}", produces = {MediaType.TEXT_PLAIN_VALUE})
-	public ResponseEntity<String> remove(@PathVariable("rno") Long rno){
+	@PreAuthorize("principal.username == #vo.replyer")
+	@DeleteMapping(value = "/{rno}",
+			consumes = {MediaType.APPLICATION_JSON_VALUE},  // 요청-json
+			produces = {MediaType.TEXT_PLAIN_VALUE})
+	public ResponseEntity<String> remove(@PathVariable("rno") Long rno, @RequestBody ReplyVO vo){
 		log.info("remove : " + rno);
 		
 		return service.remove(rno) == 1 ?
@@ -98,6 +101,7 @@ public class ReplyController {
 	}
 	
 	// http://localhost:8080/replies/24
+	@PreAuthorize("principal.username == #vo.replyer")
 	@RequestMapping(method = {RequestMethod.PUT, RequestMethod.PATCH},
 			value = "/{rno}",
 			consumes = {MediaType.APPLICATION_JSON_VALUE},
