@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.zerock.domain.BoardVO;
 import org.zerock.domain.Criteria;
+import org.zerock.mapper.BoardAttachMapper;
 import org.zerock.mapper.BoardMapper;
 
 import lombok.AllArgsConstructor;
@@ -22,6 +23,9 @@ public class BoardServiceImpl implements BoardService {
 //	@Autowired(방법1)
 	private final BoardMapper mapper;
 	
+	@Autowired
+	private BoardAttachMapper attachMapper;
+	
 //	public BoardServiceImpl(BoardMapper mapper) {
 //		this.mapper = mapper
 //	}
@@ -30,6 +34,15 @@ public class BoardServiceImpl implements BoardService {
 	public void register(BoardVO board) {
 		log.info("register.....");
 		mapper.insertSelectKey(board);
+		
+		if(board.getAttachList() == null || board.getAttachList().size() <= 0) {
+			return;
+		}
+		
+		board.getAttachList().forEach(attach -> {
+			attach.setBno(board.getBno());
+			attachMapper.insert(attach);
+		});
 	}
 	
 //	@Override

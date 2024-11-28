@@ -54,13 +54,19 @@ public class BoardController {
 	
 	@PostMapping("/register")
 	public String register(BoardVO board, RedirectAttributes rttr) {
+		log.info("===================");
 		log.info("register : " + board);
 		
-		service.register(board);
+		if(board.getAttachList() != null) {
+			board.getAttachList().forEach(attach -> log.info(attach));
+		}
+		log.info("===================");
+		
+		//service.register(board);
 		// ** View 페이지에 속성값 전달 방법
 		// addAttribute(): 값을 지속적으로 사용해야할때,
 		// addFlashAttribute(): 일회성으로 사용해야할때 사용
-		rttr.addFlashAttribute("result", board.getBno());
+		//rttr.addFlashAttribute("result", board.getBno());
 		
 		return "redirect:/board/list";
 	}

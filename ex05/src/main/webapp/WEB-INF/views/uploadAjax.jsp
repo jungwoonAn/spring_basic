@@ -145,12 +145,16 @@
 					let fileCallPath = encodeURIComponent(obj.uploadPath + '/' + 
 							obj.uuid + "_" + obj.fileName);
 					
+					let fileLink = fileCallPath.replace(new RegExp(/\\/g), "/");
+					
 					str += '<li><a href="/download?fileName='+ fileCallPath +'">'
-					+ '<img src="/resources/img/attach.png"><br>'
-					+ obj.fileName + '</a></li>';
+						+ '<img src="/resources/img/attach.png"><br>'
+						+ obj.fileName + '</a>'
+						+ '<span data-file=\"'+ fileCallPath +'\" data-type="file">X</sapn>'
+						+ '</li>';
 				}else {  // 이미지 파일이면
 					let fileCallPath = encodeURIComponent(obj.uploadPath + 
-							"/s_" + obj.uuid + "_" + obj.fileName);
+							'/s_' + obj.uuid + '_' + obj.fileName);
 				
 					let originPath = obj.uploadPath + '\\' + obj.uuid + '_' + obj.fileName;
 					console.log("originPath before : " + originPath);
@@ -159,8 +163,10 @@
 					console.log("originPath after : " + originPath);
 					
 					str += '<li><a href="javascript:showImage(\'/'+ originPath +'\')">'
-						+'<img src="/display?fileName='+ 
-							fileCallPath +'"><br>' + obj.fileName + '</a></li>';
+						+ '<img src="/display?fileName='+ fileCallPath +'"><br>' 
+						+ obj.fileName + '</a>'
+						+ '<span data-file=\"'+ fileCallPath +'\" data-type="image">X</sapn>'
+						+ '</li>';
 				}
 			});
 			
@@ -174,6 +180,23 @@
 				$('.bigPictureWrapper').hide();
 			}, 1000);
 		}); 
+		
+		// 섬네일 삭제
+		$('.uploadResult').on('click', 'span', function(e){
+			let targetFile = $(this).data('file');
+			let type = $(this).data('type');
+			console.log(targetFile);
+			
+			$.ajax({
+				url: '/deleteFile',
+				type: 'post',
+				data: {fileName: targetFile, type: type},
+				dataType: 'text',
+				success: function(result){
+					alert(result);
+				}
+			});
+		});
 	});
 	</script>
 

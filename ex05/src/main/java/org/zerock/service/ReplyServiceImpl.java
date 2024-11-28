@@ -22,7 +22,7 @@ public class ReplyServiceImpl implements ReplyService {
 	
 	@Autowired
 	private BoardMapper boardMapper;
-
+	
 	@Transactional
 	@Override
 	public int register(ReplyVO vo) {
