@@ -5,6 +5,51 @@
     
 
 <%@include file="../includes/header.jsp" %>
+<style>
+.uploadResult {
+   width: 100%;
+   background-color: #eee;
+}
+
+.uploadResult ul {
+   display: flex;
+   flex-flow: row;
+   justify-content: center;
+   align-items: center;
+}
+
+.uploadResult ul li {
+   list-style: none;
+   padding: 10px;
+}
+
+.uploadResult ul li img {
+   width: 100px;
+}
+
+.bigPictureWrapper {
+  position: fixed;
+  display: none;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.7);
+  z-index: 1001;
+  cursor: pointer;
+}
+
+.bigPicture {
+  position: relative;
+  display:flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 0;
+}
+</style>
+
     <div class="row">
         <div class="col-lg-12">
             <h1 class="page-header">게시글 상세 보기</h1>
@@ -56,6 +101,25 @@
         <!-- /.col-lg-12 -->
     </div>
     <!-- /.row -->
+    
+    <!-- AttachedFile -->
+    <div class="bigPictureWrapper">
+    	<div class="bigPicture"></div>
+    </div>
+    
+    <div class="row">
+        <div class="col-lg-12">
+        	<div class="panel panel-default">
+                <div class="panel-heading">Files</div>
+                <div class="panel-body">
+                    <div class="uploadResult">
+						<ul>
+						</ul>
+					</div>
+                </div>
+            </div>
+        </div>
+    </div>
     
     <!-- reply -->
     <div class="row">
@@ -362,5 +426,77 @@ $(document).ready(function(){
 		operForm.find('#bno').remove();
 		operForm.attr('action','/board/list').submit();
 	});
+});
+</script>
+
+<script>
+$(function(){
+	let bno = '<c:out value="${board.bno}" />';
+	
+	$.ajax({
+		url: '/board/getAttachList',
+		method: 'get',
+		data: {bno: bno},
+		dataType: 'json',
+		success: function(result){
+			console.log(result);
+			
+			let str = '';
+			
+			$(result).each(function(i, attach){
+				// image type
+				if(attach.fileType){
+					let fileCallPath = encodeURIComponent(attach.uploadPath + '/s_' 
+							+ attach.uuid + '_' + attach.fileName);
+					
+					str += '<li data-path="'+ attach.uploadPath +'" data-uuid="'+ attach.uuid;
+					str += '" data-filename="'+ attach.fileName +'" data-type="'+ attach.fileType +'"><div>';
+					str += '<img src="/display?fileName='+ fileCallPath +'">';
+					str += '</div></li>';
+				}else {										
+					str += '<li data-path="'+ attach.uploadPath +'" data-uuid="'+ attach.uuid;
+					str += '" data-filename="'+ attach.fileName +'" data-type="'+ attach.fileType +'"><div>';
+					str += '<span>'+ attach.fileName + '</span><br>';
+					str += '<img src="/resources/img/attach.png">';
+					str += '</div></li>';
+				}
+			});
+			$('.uploadResult ul').html(str);
+		}
+	});
+	
+	$('.uploadResult').on('click','li', function(e){
+		console.log('view image');
+		
+		let path = encodeURIComponent($(this).data('path') + '/' 
+				+ $(this).data('uuid') + '_' + $(this).data('filename'));
+		console.log(path.replace(new RegExp(/\\/g), '/'))
+		
+		if($(this).data('type')){
+			showImage(path.replace(new RegExp(/\\/g), '/'));
+		}else {
+			//download
+			self.location = '/download?fileName=' + path;
+		}		
+	});
+	
+	// 섬네일 클릭시 원본 이미지 보여주기
+	function showImage(fileCallPath) {
+		// alert("fileCallPath" + fileCallPath);
+		
+		$('.bigPictureWrapper').show();
+		
+		$('.bigPicture').html('<img src="/display?fileName='+ fileCallPath +'">')
+		.animate({height: '100%'}, 1000);
+	}
+	
+	// 섬네일 닫기
+ 	$('.bigPictureWrapper').click(function(){
+		$('.bigPicture').animate({height: '0'}, 1000);
+		setTimeout(function() {
+			$('.bigPictureWrapper').hide();
+		}, 1000);
+	}); 
+	
 });
 </script>

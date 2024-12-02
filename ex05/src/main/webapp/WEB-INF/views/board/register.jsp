@@ -117,8 +117,8 @@
 				
 				str += '<input type="hidden" name="attachList['+ i +'].fileName" value="'+ jobj.data('filename') +'">';
 				str += '<input type="hidden" name="attachList['+ i +'].uuid" value="'+ jobj.data('uuid') +'">';
-				str += '<input type="hidden" name="attachList['+ i +'].uploadPath" value="'+ jobj.data('uploadPath') +'">';
-				str += '<input type="hidden" name="attachList['+ i +'].fileType" value="'+ jobj.data('fileType') +'">';
+				str += '<input type="hidden" name="attachList['+ i +'].uploadPath" value="'+ jobj.data('path') +'">';
+				str += '<input type="hidden" name="attachList['+ i +'].fileType" value="'+ jobj.data('type') +'">';
 			});
 			
 			formObj.append(str).submit();
@@ -228,6 +228,31 @@
 				success: function(result){
 					alert(result);
 					targetLi.remove();
+				}
+			});
+		});
+		
+		// 섬네일 닫기
+	 	$('.bigPictureWrapper').click(function(){
+			$('.bigPicture').animate({height: '0'}, 1000);
+			setTimeout(function() {
+				$('.bigPictureWrapper').hide();
+			}, 1000);
+		}); 
+		
+		// 섬네일 삭제
+		$('.uploadResult').on('click', 'span', function(e){
+			let targetFile = $(this).data('file');
+			let type = $(this).data('type');
+			console.log(targetFile);
+			
+			$.ajax({
+				url: '/deleteFile',
+				type: 'post',
+				data: {fileName: targetFile, type: type},
+				dataType: 'text',
+				success: function(result){
+					alert(result);
 				}
 			});
 		});

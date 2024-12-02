@@ -1,7 +1,13 @@
 package org.zerock.controller;
 
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
 
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -9,7 +15,9 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.zerock.domain.BoardAttachVO;
 import org.zerock.domain.BoardVO;
 import org.zerock.domain.Criteria;
 import org.zerock.domain.PageDTO;
@@ -62,11 +70,11 @@ public class BoardController {
 		}
 		log.info("===================");
 		
-		//service.register(board);
+		service.register(board);
 		// ** View 페이지에 속성값 전달 방법
 		// addAttribute(): 값을 지속적으로 사용해야할때,
 		// addFlashAttribute(): 일회성으로 사용해야할때 사용
-		//rttr.addFlashAttribute("result", board.getBno());
+		rttr.addFlashAttribute("result", board.getBno());
 		
 		return "redirect:/board/list";
 	}
@@ -102,16 +110,60 @@ public class BoardController {
 			@ModelAttribute("cri") Criteria cri, RedirectAttributes rttr) {
 		log.info("remove..." + bno);
 		
+		List<BoardAttachVO> attachList = service.getAttachList(bno);
+		
 		if(service.remove(bno)) {  // DB조회가 되면 1(=true)이 반환
+			
+			// delete Attach Files
+			deleteFiles(attachList);
+			
 			rttr.addFlashAttribute("result", "success");
 		}
 		
 		// redirect시 속성값으로 hidden 속성값 전달
-		rttr.addAttribute("pageNum", cri.getPageNum());
-		rttr.addAttribute("amount", cri.getAmount());
-		rttr.addAttribute("type", cri.getType());	
-		rttr.addAttribute("keyword", cri.getKeyword());	
+//		rttr.addAttribute("pageNum", cri.getPageNum());
+//		rttr.addAttribute("amount", cri.getAmount());
+//		rttr.addAttribute("type", cri.getType());	
+//		rttr.addAttribute("keyword", cri.getKeyword());	
 		
-		return "redirect:/board/list";
+		return "redirect:/board/list" + cri.getListLink();
+	}
+	
+	@GetMapping(value = "/getAttachList",
+			produces = {MediaType.APPLICATION_JSON_VALUE})
+	@ResponseBody
+	public ResponseEntity<List<BoardAttachVO>> getAttachList(Long bno){
+		log.info("getAttachList" + bno);
+		
+		return new ResponseEntity<>(service.getAttachList(bno), HttpStatus.OK);
+	}
+	
+	private void deleteFiles(List<BoardAttachVO> attachList) {
+		
+		if(attachList == null || attachList.size() == 0) {
+			return;
+		}
+		
+		log.info("delete attach files.....");
+		log.info(attachList);
+		
+		attachList.forEach(attach -> {
+			try {
+				Path file = Paths.get("C:\\upload\\" + attach.getUploadPath() + "\\" + 
+									attach.getUuid() + "_" + attach.getFileName());
+				
+				Files.deleteIfExists(file);
+				
+				if(Files.probeContentType(file).startsWith("image")) {
+					Path thumbnail = Paths.get("C:\\upload\\" + attach.getUploadPath() + "\\s_" + 
+									attach.getUuid() + "_" + attach.getFileName());
+					
+					Files.delete(thumbnail);
+				}
+				
+			}catch(Exception e) {
+				log.error("delete file error" + e.getMessage());
+			}
+		});
 	}
 }

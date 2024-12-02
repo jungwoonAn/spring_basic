@@ -1,5 +1,7 @@
 package org.zerock.domain;
 
+import org.springframework.web.util.UriComponentsBuilder;
+
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -31,4 +33,16 @@ public class Criteria {
 		return type==null ? new String[] {} : type.split("");
 	}
 	
+	// 게시물 삭제 후 페이지 번호나 검색 조건 유지하면서 이동하기 위한 파라미터 처리
+	public String getListLink() {
+		
+		// 파라미터 전송에 사용되는 문자열(쿼리스트링)을 손쉽게 처리할 수 있는 클래스
+		UriComponentsBuilder builder = UriComponentsBuilder.fromPath("")
+				.queryParam("pageNum", this.pageNum)
+				.queryParam("amount", this.getAmount())
+				.queryParam("type", this.getType())
+				.queryParam("keyword", this.getKeyword());
+				
+		return builder.toUriString();
+	}	
 }

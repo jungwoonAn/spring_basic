@@ -17,4 +17,8 @@
 		select * from attach where bno = #{bno}
 	</select>
 	
+	<delete id="deleteAll">
+		delete attach where bno = #{bno}
+	</delete>
+	
 </mapper>
